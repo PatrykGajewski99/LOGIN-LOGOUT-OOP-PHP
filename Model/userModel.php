@@ -90,7 +90,7 @@ class User extends Connection
             $numberOfRows=$stmt->fetchColumn();
             if($numberOfRows==1)
             {
-                header("Location: http://localhost/userRegister_MVC/View/myAccount.php");
+                header("Location: http://localhost/userRegister_OOP/View/myAccount.php");
                 die();
             }
             echo '<script> alert("Incorrect email or password !")</script>';
@@ -109,7 +109,7 @@ class User extends Connection
             $stmt=$conn->prepare($sql);
             $stmt->execute();
             echo '<script> alert("User deleted!")</script>';
-            header("Location: http://localhost/userRegister_MVC/View/registration.php");
+            header("Location: http://localhost/userRegister_OOP/View/registration.php");
         }catch (PDOException $e)
         {
             echo "Something was wrong: " . $e->getMessage();
