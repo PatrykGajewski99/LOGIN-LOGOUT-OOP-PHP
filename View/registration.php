@@ -1,5 +1,5 @@
 <?php
-include_once '../Model/userModel.php';
+include_once '../DataBase/connection.php';
 include_once '../Controller/userController.php';
 if(isset($_POST['registraion']))
     {
@@ -8,7 +8,7 @@ if(isset($_POST['registraion']))
         $email=$_POST['email'];
         $password=$_POST['pass'];
         $confirmPassword=$_POST['confirmPass'];
-        $user=new UserController();
+        $user=new User();
         $user->addUser($userName,$fullName,$email,$password,$confirmPassword);
     }
 

@@ -1,13 +1,13 @@
 <?php
 session_start();
-include_once '../Model/userModel.php';
+include_once '../DataBase/connection.php';
 include_once '../Controller/userController.php';
 if(isset($_POST['logIn']))
 {
     $email=$_POST['email'];
     $_SESSION['email']= $email;
     $password=$_POST['pass'];
-    $user=new UserController();
+    $user=new User();
     $user->logIn($email,$password);
 }
 

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once '../Model/userModel.php';
+include_once '../DataBase/connection.php';
 include_once '../Controller/userController.php';
 if(isset($_SESSION["logIn"]) and $_SESSION["logIn"]==true)
     {
@@ -11,8 +11,7 @@ if(isset($_SESSION["logIn"]) and $_SESSION["logIn"]==true)
         $userName=$_SESSION['userName'];
     if(isset($_POST['deleteAccount']))
     {
-        $userD=new UserController();
-        $userD->delete($email);
+        $user->deleteAccount($email);
     }
     if(isset($_POST["lo"]))
         {
