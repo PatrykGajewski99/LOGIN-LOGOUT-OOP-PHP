@@ -2,16 +2,30 @@
 session_start();
 include_once '../Model/userModel.php';
 include_once '../Controller/userController.php';
-$user=new User();
-$email=$_SESSION['email'];
-$user->getUserData("$email");
-$fullName=$_SESSION['fullName'];
-$userName=$_SESSION['userName'];
-if(isset($_POST['deleteAccount']))
-{
-    $userD=new UserController();
-    $userD->delete($email);
-}
+var_dump($_SESSION["logIn"]);
+if(isset($_SESSION["logIn"]) and $_SESSION["logIn"]==true)
+    {
+        $user=new User();
+        $email=$_SESSION['email'];
+        $user->getUserData("$email");
+        $fullName=$_SESSION['fullName'];
+        $userName=$_SESSION['userName'];
+    if(isset($_POST['deleteAccount']))
+    {
+        $userD=new UserController();
+        $userD->delete($email);
+    }
+    if(isset($_POST["lo"]))
+        {
+            var_dump("lo");
+            $_SESSION["logIn"]=false;
+            header("location:login.php");
+        }
+    }
+else
+    {
+        header("location:login.php");
+    }
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -87,10 +101,10 @@ if(isset($_POST['deleteAccount']))
                         </button>
                     </div>
 					<div class="text-center p-t-136">
-						<a class="txt2" href="login.php">
+						<button class="txt2" name="lo">
 							Wyloguj się
 							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-						</a>
+						</button>
 					</div>
 				</form>
 			</div>

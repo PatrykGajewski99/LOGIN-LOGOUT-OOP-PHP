@@ -90,9 +90,10 @@ class User extends Connection
             $numberOfRows=$stmt->fetchColumn();
             if($numberOfRows==1)
             {
-                header("Location: http://localhost/userRegister_OOP/View/myAccount.php");
-                die();
+                header("Location: myAccount.php");
+                $_SESSION["logIn"]=true;
             }
+            else
             echo '<script> alert("Incorrect email or password !")</script>';
             
         }catch(PDOException $e)
