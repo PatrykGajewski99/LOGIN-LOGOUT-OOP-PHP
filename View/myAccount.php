@@ -2,7 +2,6 @@
 session_start();
 include_once '../Model/userModel.php';
 include_once '../Controller/userController.php';
-var_dump($_SESSION["logIn"]);
 if(isset($_SESSION["logIn"]) and $_SESSION["logIn"]==true)
     {
         $user=new User();
@@ -17,7 +16,6 @@ if(isset($_SESSION["logIn"]) and $_SESSION["logIn"]==true)
     }
     if(isset($_POST["lo"]))
         {
-            var_dump("lo");
             $_SESSION["logIn"]=false;
             header("location:login.php");
         }
