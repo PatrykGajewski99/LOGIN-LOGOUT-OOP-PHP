@@ -6,25 +6,27 @@ if(!isset($_SESSION))
 include_once '../DataBase/connection.php';
 class User extends Connection
 {
-    protected function checkPassword($password,$confirmPass)
+    protected function checkPassword(string $password, string $confirmPass) : bool
     {
         $uppercase = preg_match('@[A-Z]@', $password);
         $lowercase = preg_match('@[a-z]@', $password);
         $number    = preg_match('@[0-9]@', $password);
         $specialChars = preg_match('@[^\w]@', $password);
 
-        if(!$uppercase || !$lowercase || !$number || !$specialChars || strlen($password) < 8) {
-            echo "<script>alert('Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character.')</script>";
+        if(!$uppercase || !$lowercase || !$number || !$specialChars  || strlen($password) < 8 ) {
+            echo "<script>alert('Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special characters.')</script>";
+            return false;
         }
         else{
             if($password!=$confirmPass)
             {
-                echo '<script> alert("Passwords are different")</script>';return false;
+                echo '<script> alert("Passwords are different")</script>';
+                return false;
             }
             return true;
         }
     }
-    protected function checkEmail($email)
+    protected function checkEmail(string $email) : bool
     {
         $dbName=$this->tableName;
         $conn=$this->dbConnecting();
@@ -39,7 +41,7 @@ class User extends Connection
         return false;
 
     }
-    protected function checkUserName($userName)
+    protected function checkUserName(string $userName) : bool
     {
         $dbName=$this->tableName;
         $conn=$this->dbConnecting();
