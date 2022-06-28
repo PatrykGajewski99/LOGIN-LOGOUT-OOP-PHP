@@ -1,28 +1,8 @@
 <?php
 session_start();
-include_once '../DataBase/connection.php';
 include_once '../Controller/userController.php';
-if(isset($_SESSION["logIn"]) and $_SESSION["logIn"]==true)
-    {
-        $user=new User();
-        $email=$_SESSION['email'];
-        $user->getUserData("$email");
-        $fullName=$_SESSION['fullName'];
-        $userName=$_SESSION['userName'];
-    if(isset($_POST['deleteAccount']))
-    {
-        $user->deleteAccount($email);
-    }
-    if(isset($_POST["lo"]))
-        {
-            $_SESSION["logIn"]=false;
-            header("location:login.php");
-        }
-    }
-else
-    {
-        header("location:login.php");
-    }
+if(!$_SESSION["login"] or !isset($_SESSION["login"]))
+    header("location: login.php");
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -67,7 +47,7 @@ else
                     <label for="userName">userName</label><br>
                     <div class="wrap-input100 validate-input" data-validate = "Nazwa użytkownika jest obowiązkowa">
 
-                        <input class="input100" type="text" name="userName" placeholder="Nazwa użytkownika" value="<?php echo $userName?>" disabled>
+                        <input class="input100" type="text" name="userName" placeholder="Nazwa użytkownika" value="<?php echo  $_SESSION['userName']?>" disabled>
                         <span class="focus-input100"></span>
                         <span class="symbol-input100">
 							<i class="fa fa-child" aria-hidden="true"></i>
@@ -77,7 +57,7 @@ else
                     <label for="userName">fullName</label><br>
                     <div class="wrap-input100 validate-input" data-validate = "Pole imię i nazwisko jest obowiązkowe">
 
-                        <input class="input100" type="text" name="fullName" placeholder="Imię i nazwisko" value="<?php echo $fullName?>" disabled>
+                        <input class="input100" type="text" name="fullName" placeholder="Imię i nazwisko" value="<?php echo $_SESSION['fullName']?>" disabled>
                         <span class="focus-input100"></span>
                         <span class="symbol-input100">
 							<i class="fa fa-commenting" aria-hidden="true"></i>
@@ -85,7 +65,7 @@ else
                     </div>
                     <label for="email">Email</label><br>
 					<div class="wrap-input100 validate-input" data-validate = "Email jest obowiązkowy: ex@abc.xyz">
-						<input class="input100" type="text" name="email" placeholder="Email " value="<?php echo $email?>" disabled>
+						<input class="input100" type="text" name="email" placeholder="Email " value="<?php echo $_SESSION['email']?>" disabled>
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-envelope" aria-hidden="true"></i>
@@ -98,10 +78,10 @@ else
                         </button>
                     </div>
 					<div class="text-center p-t-136">
-						<button class="txt2" name="lo">
+						<a class="txt2" type="submit"  href="login.php <?php  $_SESSION["login"]=false; ?>">
 							Wyloguj się
 							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-						</button>
+						</a>
 					</div>
 				</form>
 			</div>

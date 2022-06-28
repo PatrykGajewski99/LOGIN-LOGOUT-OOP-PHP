@@ -1,4 +1,8 @@
 <?php
+if(!isset($_SESSION))
+{
+    session_start();
+}
 include_once '../DataBase/connection.php';
 class User extends Connection
 {
@@ -14,9 +18,9 @@ class User extends Connection
     {
         $dbName=$this->tableName;
         $conn=$this->dbConnecting();
-        $sql="SELECT count(*) from $dbName where email='$email'";
+        $sql="SELECT count(*) from $dbName where email=?";
         $stmt=$conn->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([$email]);
         $numberOfRows=$stmt->fetchColumn();
         if($numberOfRows==0)
         {
@@ -29,9 +33,9 @@ class User extends Connection
     {
         $dbName=$this->tableName;
         $conn=$this->dbConnecting();
-        $sql="SELECT count(*) from $dbName where userName='$userName'";
+        $sql="SELECT count(*) from $dbName where userName=?";
         $stmt=$conn->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([$userName]);
         $numberOfRows=$stmt->fetchColumn();
         if($numberOfRows==0)
         {
@@ -40,9 +44,14 @@ class User extends Connection
         return false;
 
     }
-    public function addUser($userName,$fullName,$email,$password,$confirmPass)
+    public function addUser()
     {
         try {
+            $userName= filter_var($_POST['userName'],FILTER_SANITIZE_STRING);
+            $fullName= filter_var($_POST['fullName'],FILTER_SANITIZE_STRING);
+            $email=filter_var($_POST['email'],FILTER_SANITIZE_EMAIL);
+            $password=filter_var($_POST['pass'],FILTER_SANITIZE_STRING);
+            $confirmPass= filter_var($_POST['confirmPass'],FILTER_SANITIZE_STRING);
             $dbName=$this->tableName;
             $conn=$this->dbConnecting();
             if($this->checkUserName($userName))
@@ -73,20 +82,22 @@ class User extends Connection
             echo "Something was wrong: " . $e->getMessage();
         }
     }
-    public function logIn($email,$password)
+    public function logIn()
     {
         try {
+            $email=filter_var($_POST['email'],FILTER_SANITIZE_EMAIL);
+            $password=filter_var($_POST['pass'],FILTER_SANITIZE_STRING);
             $dbName=$this->tableName;
             $conn=$this->dbConnecting();
             $hashedPassword=sha1($password);
-            $sql="SELECT count(*) FROM $dbName WHERE email='$email' AND password='$hashedPassword'";
+            $sql="SELECT count(*) FROM $dbName WHERE email=? AND password=?";
             $stmt=$conn->prepare($sql);
-            $stmt->execute();
+            $stmt->execute([$email,$hashedPassword]);
             $numberOfRows=$stmt->fetchColumn();
             if($numberOfRows==1)
             {
                 header("Location: myAccount.php");
-                $_SESSION["logIn"]=true;
+                $_SESSION["login"]=true;
             }
             else
                 echo '<script> alert("Incorrect email or password !")</script>';
@@ -96,29 +107,32 @@ class User extends Connection
             echo "Something was wrong: " . $e->getMessage();
         }
     }
-    public function deleteAccount($email)
+    public function deleteAccount()
     {
         try {
+            $email=$_SESSION['email'];
             $dbName=$this->tableName;
             $conn=$this->dbConnecting();
-            $sql="DELETE FROM $dbName WHERE email='$email'";
+            $sql="DELETE FROM $dbName WHERE email=?";
             $stmt=$conn->prepare($sql);
-            $stmt->execute();
-            echo '<script> alert("User deleted!")</script>';
-            header("Location: http://localhost/userRegister_OOP/View/registration.php");
+            $stmt->execute([$email]);
+            $_SESSION["login"]=false;
+            header("Location: ../registration.php");
         }catch (PDOException $e)
         {
             echo "Something was wrong: " . $e->getMessage();
         }
     }
-    public function getUserData($email)
+    public function getUserData()
     {
         try {
+            $email=filter_var($_POST['email'],FILTER_SANITIZE_EMAIL);
+            $_SESSION['email']=$email;
             $dbName=$this->tableName;
             $conn=$this->dbConnecting();
-            $sql="SELECT userName, fullName from $dbName WHERE email='$email'";
+            $sql="SELECT userName, fullName from $dbName WHERE email=?";
             $stmt=$conn->prepare($sql);
-            $stmt->execute();
+            $stmt->execute([$email]);
             while($row=$stmt->fetch())
             {
                 $_SESSION['userName']=$row['userName'];
@@ -129,4 +143,17 @@ class User extends Connection
             echo "Something was wrong: " . $e->getMessage();
         }
     }
+}
+if(!empty($_POST))
+{
+    $user=new User();
+    if(isset($_POST['registraion']))
+        $user->addUser();
+    elseif (isset($_POST['logIn']))
+    {
+        $user->getUserData();
+        $user->logIn();
+    }
+    elseif(isset($_POST['deleteAccount']))
+        $user->deleteAccount();
 }

@@ -1,17 +1,5 @@
 <?php
-include_once '../DataBase/connection.php';
 include_once '../Controller/userController.php';
-if(isset($_POST['registraion']))
-    {
-        $userName=$_POST['userName'];
-        $fullName=$_POST['fullName'];
-        $email=$_POST['email'];
-        $password=$_POST['pass'];
-        $confirmPassword=$_POST['confirmPass'];
-        $user=new User();
-        $user->addUser($userName,$fullName,$email,$password,$confirmPassword);
-    }
-
 ?>
 <!DOCTYPE html>
 <html lang="pl">

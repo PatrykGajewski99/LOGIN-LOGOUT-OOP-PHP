@@ -1,16 +1,5 @@
 <?php
-session_start();
-include_once '../DataBase/connection.php';
 include_once '../Controller/userController.php';
-if(isset($_POST['logIn']))
-{
-    $email=$_POST['email'];
-    $_SESSION['email']= $email;
-    $password=$_POST['pass'];
-    $user=new User();
-    $user->logIn($email,$password);
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="pl">
